@@ -7,7 +7,7 @@ echo $y
 echo $ssid
 wpa_cli set_network $y ssid \"$ssid\"
 wpa_cli set_network $y psk \"$2\"
-#wpa_cli save_config
+wpa_cli save_config
 
 gpio mode 44 output
 gpio write 44 1

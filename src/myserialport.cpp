@@ -94,6 +94,18 @@ static void myInterrupt41 () {
 
 }
 
+QString MySerialPort::getVersion(){
+
+    QProcess gerVers;
+    gerVers.start(QString("cat /home/pi/Argon20/VERSION"));
+    gerVers.waitForFinished();
+    QString vers = gerVers.readAllStandardOutput().trimmed();
+
+    qDebug() << "VERSION: " << vers;
+    return vers;
+
+}
+
 bool MySerialPort::checkCameras(){
 
     const QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
@@ -514,6 +526,8 @@ void MySerialPort::adjustLEDValue(int val){
     adjustLED.waitForFinished();
 }
 
+
+
 //Controller Functions
 
 void MySerialPort::controllerNextSong(){
@@ -599,6 +613,8 @@ void MySerialPort::handleCommand(const QString msg){
         // Est connection between App and Device
         if (msgSplit[1]=="15" || msgSplit[1]=="25"){
             sppAddress = msgSplit[1];
+            writeData(QString("SEND %1 VERSION %2 \r").arg(sppAddress).arg(getVersion()).toLatin1());
+            
             QString deviceAddress = msgSplit[3]; 
             QMetaObject::invokeMethod(this->par, "connected");
 
@@ -832,6 +848,10 @@ void MySerialPort::handleCommand(const QString msg){
 
     else if (msgSplit[0]=="RECV"){
 
+            // if(msgSplit[1].at(1)=="5"){
+            //     sppAddress = msgSplit[1]
+            // } 
+
             //Deprecated
             if(msgSplit[3]=="REAR"){
                 triggerRear(true);
@@ -904,31 +924,7 @@ void MySerialPort::handleCommand(const QString msg){
                 resetValues();
             }
 
-//             else if (msgSplit[3]=="SCAN_WIFI"){
-//                 QProcess scanWifiAndSend;
-//                 QString command = QString("sh /home/pi/Argon20/scripts/scanWifi.sh");
-// //                qDebug() << command ;
-//                 scanWifiAndSend.start(command);
-//                 scanWifiAndSend.waitForFinished();
-//                 QString output = scanWifiAndSend.readAllStandardOutput();
-//                 QSet<QString> set;
-//                 QString res = "";
-//                 QStringList ssids = output.split(':');
-//                 for(auto i:ssids){
-//                     if(i.contains("\n\tSSID")){
-//                        set.insert(i.split("\n")[0]);
-//                     }
-//                 }
-
-//                 for(auto i:set){ 
-//                   res+=i+" ";
-
-//                 }
-//                 qDebug() <<res;
-//                 writeData(QString("SEND %1 %2\r").arg(sppAddress).arg(res).toLatin1());
-
-
-//             }
+ 
 
  
 
@@ -1061,16 +1057,52 @@ void MySerialPort::handleCommand(const QString msg){
 
              else if (msgSplit[3]=="GET_SSID"){
                     QProcess getSSID;
-                     
-                    getSSID.start("bash",QStringList() << "-c" << "sudo iwlist wlan0 scan | grep ESSID | tr '\n' '\0' | tr -dc '[:alnum:]\n\r' ");
+                    QString ssid = "" ;
+                    getSSID.start("bash",QStringList() << "-c" << "sudo iwlist wlan0 scan | grep ESSID | xargs");
                     getSSID.waitForFinished();
-                    QString ssid = getSSID.readAllStandardOutput();
-                    
-                    // QStringList ls = ssid.split(QRegExp("\\s+|\\"));
 
-                    writeData(QString("SEND %1 RECEIVE_SSID %2\r").arg(sppAddress).arg(ssid).toLatin1());
-                     
-                    qDebug() << "WIFILIST "<< ssid; 
+                    ssid += getSSID.readAllStandardOutput().trimmed();
+
+                    QStringList ls = ssid.split("ESSID:");
+                    ls << "TERMINATE";
+                    // writeData(QString("SEND %1 RECEIVE_SSID %2\r").arg(sppAddress).arg(ls.join(" ")).toLatin1());             
+                    // qDebug() << "WIFILIST "<< ls.join(" "); 
+                    int ctr = 0;
+                    for(int i=0;i<ls.size();++i){
+                        if(ctr>5) break;
+                        if(ls.at(i).length()>0){
+                            writeData(QString("SEND %1 SSID %2 \r").arg(sppAddress).arg(ls.at(i).trimmed()).toLatin1()); 
+                            ctr++;
+                        }
+                        
+                    }
+
+             }
+
+             else if (msgSplit[3]=="ON_WIFI"){
+                QProcess onWifi;
+                onWifi.start("bash",QStringList() << "-c" << "gpio mode 44 output && gpio write 44 0");
+                onWifi.waitForFinished();
+
+             }
+
+            else if (msgSplit[3]=="OFF_WIFI"){
+                QProcess offWifi;
+                offWifi.start("bash",QStringList() << "-c" << "gpio mode 44 output && gpio write 44 1");
+                offWifi.waitForFinished();
+             }
+
+            else if (msgSplit[3]=="START_UPDATE"){
+                QProcess updateProcess;
+                
+                if(msgSplit.size>4){
+                    updateProcess.start("sudo bash /home/pi/Argon20/scripts/update.sh %1").arg(msgSplit[4]);
+                    updateProcess.waitForExit();                   
+                }
+
+                qDebug() << "Update Code: " << subproc.exitCode()
+               
+
              }
 
             // ***** CONTROLLER COMMANDS *****//
@@ -1154,13 +1186,17 @@ void MySerialPort::handleCommand(const QString msg){
 
     else if(msgSplit[0]=="BATTERY_STATUS" && msgSplit[1]=="DISABLED"){
         QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd__HH_mm_ss");
-        QString appendVoltageFile = QString("sudo sh /home/pi/Argon20/scripts/logVoltage.sh %1 %2").arg(timestamp).arg(msgSplit[2]);
-        qDebug() << appendVoltageFile;
-        QProcess appendvoltage;
-        appendvoltage.start(appendVoltageFile);
-        appendvoltage.waitForFinished();
-        appendvoltage.close();
+        // QString appendVoltageFile = QString("sudo sh /home/pi/Argon20/scripts/logVoltage.sh %1 %2").arg(timestamp).arg(msgSplit[2]);
+        // qDebug() << appendVoltageFile;
+        // QProcess appendvoltage;
+        // appendvoltage.start(appendVoltageFile);
+        // appendvoltage.waitForFinished();
+        // appendvoltage.close();
         QMetaObject::invokeMethod(this->par, "updateBattery",Q_ARG(QVariant, msgSplit[2]));
+    }
+
+    else if(msgSplit[0]=="CALLER_NUMBER"){
+        writeData(QString("SEND %1 CALLER_NUMBER %2\r").arg(sppAddress).arg(msgSplit[2]).toLatin1());
     }
 
 

@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MySerialPort_t {
-    QByteArrayData data[45];
-    char stringdata0[564];
+    QByteArrayData data[46];
+    char stringdata0[575];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -75,7 +75,8 @@ QT_MOC_LITERAL(40, 475, 26), // "controllerReduceBrightness"
 QT_MOC_LITERAL(41, 502, 17), // "controllerTakePic"
 QT_MOC_LITERAL(42, 520, 21), // "controllerToggleMusic"
 QT_MOC_LITERAL(43, 542, 8), // "hasMedia"
-QT_MOC_LITERAL(44, 551, 12) // "checkCameras"
+QT_MOC_LITERAL(44, 551, 12), // "checkCameras"
+QT_MOC_LITERAL(45, 564, 10) // "getVersion"
 
     },
     "MySerialPort\0cppSend\0\0textOut\0"
@@ -93,7 +94,7 @@ QT_MOC_LITERAL(44, 551, 12) // "checkCameras"
     "controllerToggleMenu\0controllerIncreaseBrightness\0"
     "controllerReduceBrightness\0controllerTakePic\0"
     "controllerToggleMusic\0hasMedia\0"
-    "checkCameras"
+    "checkCameras\0getVersion"
 };
 #undef QT_MOC_LITERAL
 
@@ -103,7 +104,7 @@ static const uint qt_meta_data_MySerialPort[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      33,   14, // methods
+      34,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -111,41 +112,42 @@ static const uint qt_meta_data_MySerialPort[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  179,    2, 0x06 /* Public */,
+       1,    1,  184,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,  182,    2, 0x0a /* Public */,
-       5,    0,  183,    2, 0x0a /* Public */,
-       6,    2,  184,    2, 0x0a /* Public */,
-       6,    1,  189,    2, 0x2a /* Public | MethodCloned */,
-       9,    0,  192,    2, 0x0a /* Public */,
-      10,    1,  193,    2, 0x0a /* Public */,
-      13,    1,  196,    2, 0x0a /* Public */,
-      15,    3,  199,    2, 0x0a /* Public */,
-      19,    0,  206,    2, 0x0a /* Public */,
-      20,    1,  207,    2, 0x0a /* Public */,
-      20,    0,  210,    2, 0x2a /* Public | MethodCloned */,
-      22,    1,  211,    2, 0x0a /* Public */,
-      22,    0,  214,    2, 0x2a /* Public | MethodCloned */,
-      23,    0,  215,    2, 0x0a /* Public */,
-      24,    0,  216,    2, 0x0a /* Public */,
-      25,    1,  217,    2, 0x0a /* Public */,
-      27,    1,  220,    2, 0x0a /* Public */,
-      28,    0,  223,    2, 0x0a /* Public */,
-      29,    0,  224,    2, 0x0a /* Public */,
-      30,    0,  225,    2, 0x0a /* Public */,
-      31,    2,  226,    2, 0x0a /* Public */,
-      34,    0,  231,    2, 0x0a /* Public */,
-      35,    1,  232,    2, 0x0a /* Public */,
-      36,    0,  235,    2, 0x0a /* Public */,
-      37,    0,  236,    2, 0x0a /* Public */,
-      38,    0,  237,    2, 0x0a /* Public */,
-      39,    0,  238,    2, 0x0a /* Public */,
-      40,    0,  239,    2, 0x0a /* Public */,
-      41,    0,  240,    2, 0x0a /* Public */,
-      42,    0,  241,    2, 0x0a /* Public */,
-      43,    0,  242,    2, 0x0a /* Public */,
-      44,    0,  243,    2, 0x0a /* Public */,
+       4,    0,  187,    2, 0x0a /* Public */,
+       5,    0,  188,    2, 0x0a /* Public */,
+       6,    2,  189,    2, 0x0a /* Public */,
+       6,    1,  194,    2, 0x2a /* Public | MethodCloned */,
+       9,    0,  197,    2, 0x0a /* Public */,
+      10,    1,  198,    2, 0x0a /* Public */,
+      13,    1,  201,    2, 0x0a /* Public */,
+      15,    3,  204,    2, 0x0a /* Public */,
+      19,    0,  211,    2, 0x0a /* Public */,
+      20,    1,  212,    2, 0x0a /* Public */,
+      20,    0,  215,    2, 0x2a /* Public | MethodCloned */,
+      22,    1,  216,    2, 0x0a /* Public */,
+      22,    0,  219,    2, 0x2a /* Public | MethodCloned */,
+      23,    0,  220,    2, 0x0a /* Public */,
+      24,    0,  221,    2, 0x0a /* Public */,
+      25,    1,  222,    2, 0x0a /* Public */,
+      27,    1,  225,    2, 0x0a /* Public */,
+      28,    0,  228,    2, 0x0a /* Public */,
+      29,    0,  229,    2, 0x0a /* Public */,
+      30,    0,  230,    2, 0x0a /* Public */,
+      31,    2,  231,    2, 0x0a /* Public */,
+      34,    0,  236,    2, 0x0a /* Public */,
+      35,    1,  237,    2, 0x0a /* Public */,
+      36,    0,  240,    2, 0x0a /* Public */,
+      37,    0,  241,    2, 0x0a /* Public */,
+      38,    0,  242,    2, 0x0a /* Public */,
+      39,    0,  243,    2, 0x0a /* Public */,
+      40,    0,  244,    2, 0x0a /* Public */,
+      41,    0,  245,    2, 0x0a /* Public */,
+      42,    0,  246,    2, 0x0a /* Public */,
+      43,    0,  247,    2, 0x0a /* Public */,
+      44,    0,  248,    2, 0x0a /* Public */,
+      45,    0,  249,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
@@ -183,6 +185,7 @@ static const uint qt_meta_data_MySerialPort[] = {
     QMetaType::Void,
     QMetaType::Bool,
     QMetaType::Bool,
+    QMetaType::QString,
 
        0        // eod
 };
@@ -228,6 +231,8 @@ void MySerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
         case 32: { bool _r = _t->checkCameras();
             if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 33: { QString _r = _t->getVersion();
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -271,13 +276,13 @@ int MySerialPort::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 33)
+        if (_id < 34)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 33;
+        _id -= 34;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 33)
+        if (_id < 34)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 33;
+        _id -= 34;
     }
     return _id;
 }

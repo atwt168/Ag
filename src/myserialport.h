@@ -139,6 +139,8 @@ public slots:
     bool hasMedia();
     bool checkCameras();
 
+    QString getVersion();
+
     // void myInterrupt41();
 
    
