@@ -188,7 +188,7 @@ void MySerialPort::updateBattery(){
 
 
     QString command = QString("sudo lsof -t /dev/video1");
-    qDebug() << command;
+    // qDebug() << command;
     pingvideo1.start(command);
     pingvideo1.waitForFinished();
     QString output(pingvideo1.readAllStandardOutput());
@@ -203,7 +203,7 @@ void MySerialPort::updateBattery(){
     // PING WIFI CHECK
     QProcess checkWifi;
     command = QString("iwconfig 2>&1 | grep ESSID");
-    qDebug() << command;
+    // qDebug() << command;
     checkWifi.start("bash",QStringList() << "-c" << "iwconfig 2>&1 | grep ESSID");
     checkWifi.waitForFinished();
     QString wifiOutput(checkWifi.readAllStandardOutput());
@@ -1094,13 +1094,13 @@ void MySerialPort::handleCommand(const QString msg){
 
             else if (msgSplit[3]=="START_UPDATE"){
                 QProcess updateProcess;
-                
-                if(msgSplit.size>4){
-                    updateProcess.start("sudo bash /home/pi/Argon20/scripts/update.sh %1").arg(msgSplit[4]);
-                    updateProcess.waitForExit();                   
+
+                if(msgSplit.size()>4){
+                    updateProcess.startDetached(QString("sudo bash /home/pi/Argon20/scripts/update.sh %1").arg(msgSplit[4]).toLatin1());
+                    updateProcess.waitForFinished();                   
                 }
 
-                qDebug() << "Update Code: " << subproc.exitCode()
+                qDebug() << "Update Code: " << updateProcess.exitCode();
                
 
              }
