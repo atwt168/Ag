@@ -4,7 +4,7 @@ TEMPLATE = app
 QT += qml network quick positioning location sql widgets core bluetooth serialport multimedia
 
 CONFIG += c++14
-CONFIG(release):DEFINES += QT_NO_DEBUG_OUTPUT
+CONFIG(release):DEFINES += QT_NO_DEBUG_OUTPUT  
 
 ios|android {
     QT -= widgets

@@ -5,7 +5,6 @@ QT += qml network quick positioning location sql widgets core bluetooth serialpo
 
 CONFIG += c++14
 
-
 ios|android {
     QT -= widgets
 }
