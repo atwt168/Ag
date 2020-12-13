@@ -1,3 +1,3 @@
-mv /home/pi/Argon20/frontCamRecordings/* /mnt/mydisk/frontRecord
-mv /home/pi/Argon20/rearCamRecordings/* /mnt/mydisk/rearRecord
-mv /home/pi/Argon20/frontCamPictures/* /mnt/mydisk/frontPictures
+mv /home/pi/frontCamRecordings/* /mnt/mydisk/frontRecord
+mv /home/pi/rearCamRecordings/* /mnt/mydisk/rearRecord
+mv /home/pi/frontCamPictures/* /mnt/mydisk/frontPictures

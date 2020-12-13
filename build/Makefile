@@ -1033,6 +1033,7 @@ moc_myserialport.cpp: ../src/myserialport.h \
 		/opt/Qt5/include/QtGui/qpolygon.h \
 		/opt/Qt5/include/QtGui/qpainterpath.h \
 		/opt/Qt5/include/QtMultimedia/qabstractvideobuffer.h \
+		/opt/Qt5/include/QtCore/QDir \
 		moc_predefs.h \
 		/opt/Qt5/bin/moc
 	/opt/Qt5/bin/moc $(DEFINES) --include /home/pi/Argon20/releaseBuild/moc_predefs.h -I/opt/Qt5/mkspecs/linux-rpi-g++ -I/home/pi/Argon20 -I/home/pi/Argon20/include -I/home/pi/Argon20/WiringPi-Qt -I/opt/Qt5/include -I/opt/Qt5/include/QtLocation -I/opt/Qt5/include/QtPositioningQuick -I/opt/Qt5/include/QtQuick -I/opt/Qt5/include/QtWidgets -I/opt/Qt5/include/QtMultimedia -I/opt/Qt5/include/QtGui -I/opt/Qt5/include/QtQml -I/opt/Qt5/include/QtNetwork -I/opt/Qt5/include/QtPositioning -I/opt/Qt5/include/QtSql -I/opt/Qt5/include/QtBluetooth -I/opt/Qt5/include/QtSerialPort -I/opt/Qt5/include/QtCore -I. -I/usr/include/c++/6 -I/usr/include/arm-linux-gnueabihf/c++/6 -I/usr/include/c++/6/backward -I/usr/lib/gcc/arm-linux-gnueabihf/6/include -I/usr/local/include -I/usr/lib/gcc/arm-linux-gnueabihf/6/include-fixed -I/usr/include/arm-linux-gnueabihf -I/usr/include ../src/myserialport.h -o moc_myserialport.cpp
@@ -1374,7 +1375,8 @@ qmapboxglapp.o: ../src/qmapboxglapp.cpp /opt/Qt5/include/QtWidgets/QApplication 
 		/opt/Qt5/include/QtMultimedia/qcameraimageprocessing.h \
 		/opt/Qt5/include/QtMultimedia/qcameraviewfindersettings.h \
 		/opt/Qt5/include/QtMultimedia/qvideoframe.h \
-		/opt/Qt5/include/QtMultimedia/qabstractvideobuffer.h
+		/opt/Qt5/include/QtMultimedia/qabstractvideobuffer.h \
+		/opt/Qt5/include/QtCore/QDir
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qmapboxglapp.o ../src/qmapboxglapp.cpp
 
 qcheapruler.o: ../src/qcheapruler.cpp ../src/qcheapruler.hpp \
@@ -1702,7 +1704,8 @@ myserialport.o: ../src/myserialport.cpp ../src/myserialport.h \
 		/opt/Qt5/include/QtGui/qmatrix.h \
 		/opt/Qt5/include/QtGui/qpolygon.h \
 		/opt/Qt5/include/QtGui/qpainterpath.h \
-		/opt/Qt5/include/QtMultimedia/qabstractvideobuffer.h
+		/opt/Qt5/include/QtMultimedia/qabstractvideobuffer.h \
+		/opt/Qt5/include/QtCore/QDir
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o myserialport.o ../src/myserialport.cpp
 
 qrc_assets.o: qrc_assets.cpp 

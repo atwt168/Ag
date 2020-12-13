@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MySerialPort_t {
-    QByteArrayData data[50];
-    char stringdata0[607];
+    QByteArrayData data[55];
+    char stringdata0[664];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -80,7 +80,12 @@ QT_MOC_LITERAL(45, 564, 10), // "getVersion"
 QT_MOC_LITERAL(46, 575, 11), // "sendVersion"
 QT_MOC_LITERAL(47, 587, 11), // "sendDelayed"
 QT_MOC_LITERAL(48, 599, 1), // "s"
-QT_MOC_LITERAL(49, 601, 5) // "delay"
+QT_MOC_LITERAL(49, 601, 5), // "delay"
+QT_MOC_LITERAL(50, 607, 15), // "setCurrentState"
+QT_MOC_LITERAL(51, 623, 7), // "address"
+QT_MOC_LITERAL(52, 631, 4), // "link"
+QT_MOC_LITERAL(53, 636, 12), // "checkCamWifi"
+QT_MOC_LITERAL(54, 649, 14) // "getDeviceState"
 
     },
     "MySerialPort\0cppSend\0\0textOut\0"
@@ -99,7 +104,8 @@ QT_MOC_LITERAL(49, 601, 5) // "delay"
     "controllerReduceBrightness\0controllerTakePic\0"
     "controllerToggleMusic\0hasMedia\0"
     "checkCameras\0getVersion\0sendVersion\0"
-    "sendDelayed\0s\0delay"
+    "sendDelayed\0s\0delay\0setCurrentState\0"
+    "address\0link\0checkCamWifi\0getDeviceState"
 };
 #undef QT_MOC_LITERAL
 
@@ -109,7 +115,7 @@ static const uint qt_meta_data_MySerialPort[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      37,   14, // methods
+      40,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -117,45 +123,48 @@ static const uint qt_meta_data_MySerialPort[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  199,    2, 0x06 /* Public */,
+       1,    1,  214,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,  202,    2, 0x0a /* Public */,
-       5,    0,  203,    2, 0x0a /* Public */,
-       6,    2,  204,    2, 0x0a /* Public */,
-       6,    1,  209,    2, 0x2a /* Public | MethodCloned */,
-       9,    0,  212,    2, 0x0a /* Public */,
-      10,    1,  213,    2, 0x0a /* Public */,
-      13,    1,  216,    2, 0x0a /* Public */,
-      15,    3,  219,    2, 0x0a /* Public */,
-      19,    0,  226,    2, 0x0a /* Public */,
-      20,    1,  227,    2, 0x0a /* Public */,
-      20,    0,  230,    2, 0x2a /* Public | MethodCloned */,
-      22,    1,  231,    2, 0x0a /* Public */,
-      22,    0,  234,    2, 0x2a /* Public | MethodCloned */,
-      23,    0,  235,    2, 0x0a /* Public */,
-      24,    0,  236,    2, 0x0a /* Public */,
-      25,    1,  237,    2, 0x0a /* Public */,
-      27,    1,  240,    2, 0x0a /* Public */,
-      28,    0,  243,    2, 0x0a /* Public */,
-      29,    0,  244,    2, 0x0a /* Public */,
-      30,    0,  245,    2, 0x0a /* Public */,
-      31,    2,  246,    2, 0x0a /* Public */,
-      34,    0,  251,    2, 0x0a /* Public */,
-      35,    1,  252,    2, 0x0a /* Public */,
-      36,    0,  255,    2, 0x0a /* Public */,
-      37,    0,  256,    2, 0x0a /* Public */,
-      38,    0,  257,    2, 0x0a /* Public */,
-      39,    0,  258,    2, 0x0a /* Public */,
-      40,    0,  259,    2, 0x0a /* Public */,
-      41,    0,  260,    2, 0x0a /* Public */,
-      42,    0,  261,    2, 0x0a /* Public */,
-      43,    0,  262,    2, 0x0a /* Public */,
-      44,    0,  263,    2, 0x0a /* Public */,
-      45,    0,  264,    2, 0x0a /* Public */,
-      46,    0,  265,    2, 0x0a /* Public */,
-      47,    2,  266,    2, 0x0a /* Public */,
-      47,    1,  271,    2, 0x2a /* Public | MethodCloned */,
+       4,    0,  217,    2, 0x0a /* Public */,
+       5,    0,  218,    2, 0x0a /* Public */,
+       6,    2,  219,    2, 0x0a /* Public */,
+       6,    1,  224,    2, 0x2a /* Public | MethodCloned */,
+       9,    0,  227,    2, 0x0a /* Public */,
+      10,    1,  228,    2, 0x0a /* Public */,
+      13,    1,  231,    2, 0x0a /* Public */,
+      15,    3,  234,    2, 0x0a /* Public */,
+      19,    0,  241,    2, 0x0a /* Public */,
+      20,    1,  242,    2, 0x0a /* Public */,
+      20,    0,  245,    2, 0x2a /* Public | MethodCloned */,
+      22,    1,  246,    2, 0x0a /* Public */,
+      22,    0,  249,    2, 0x2a /* Public | MethodCloned */,
+      23,    0,  250,    2, 0x0a /* Public */,
+      24,    0,  251,    2, 0x0a /* Public */,
+      25,    1,  252,    2, 0x0a /* Public */,
+      27,    1,  255,    2, 0x0a /* Public */,
+      28,    0,  258,    2, 0x0a /* Public */,
+      29,    0,  259,    2, 0x0a /* Public */,
+      30,    0,  260,    2, 0x0a /* Public */,
+      31,    2,  261,    2, 0x0a /* Public */,
+      34,    0,  266,    2, 0x0a /* Public */,
+      35,    1,  267,    2, 0x0a /* Public */,
+      36,    0,  270,    2, 0x0a /* Public */,
+      37,    0,  271,    2, 0x0a /* Public */,
+      38,    0,  272,    2, 0x0a /* Public */,
+      39,    0,  273,    2, 0x0a /* Public */,
+      40,    0,  274,    2, 0x0a /* Public */,
+      41,    0,  275,    2, 0x0a /* Public */,
+      42,    0,  276,    2, 0x0a /* Public */,
+      43,    0,  277,    2, 0x0a /* Public */,
+      44,    0,  278,    2, 0x0a /* Public */,
+      45,    0,  279,    2, 0x0a /* Public */,
+      46,    0,  280,    2, 0x0a /* Public */,
+      47,    2,  281,    2, 0x0a /* Public */,
+      47,    1,  286,    2, 0x2a /* Public | MethodCloned */,
+      50,    2,  289,    2, 0x0a /* Public */,
+      53,    0,  294,    2, 0x0a /* Public */,
+      54,    0,  295,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
@@ -197,6 +206,9 @@ static const uint qt_meta_data_MySerialPort[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::QByteArray, QMetaType::Int,   48,   49,
     QMetaType::Void, QMetaType::QByteArray,   48,
+    QMetaType::Void, QMetaType::QString, QMetaType::QString,   51,   52,
+    QMetaType::Void,
+    QMetaType::QString,
 
        0        // eod
 };
@@ -247,6 +259,10 @@ void MySerialPort::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 34: _t->sendVersion(); break;
         case 35: _t->sendDelayed((*reinterpret_cast< const QByteArray(*)>(_a[1])),(*reinterpret_cast< int(*)>(_a[2]))); break;
         case 36: _t->sendDelayed((*reinterpret_cast< const QByteArray(*)>(_a[1]))); break;
+        case 37: _t->setCurrentState((*reinterpret_cast< QString(*)>(_a[1])),(*reinterpret_cast< QString(*)>(_a[2]))); break;
+        case 38: _t->checkCamWifi(); break;
+        case 39: { QString _r = _t->getDeviceState();
+            if (_a[0]) *reinterpret_cast< QString*>(_a[0]) = std::move(_r); }  break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -290,13 +306,13 @@ int MySerialPort::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 37)
+        if (_id < 40)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 37;
+        _id -= 40;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 37)
+        if (_id < 40)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 37;
+        _id -= 40;
     }
     return _id;
 }
