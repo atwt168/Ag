@@ -1,0 +1,340 @@
+#include "myserialport.h"
+#include <QtSerialPort/QSerialPort>
+#include <QMessageBox>
+#include <QObject>
+#include <QDebug>
+#include <QCloseEvent>
+#include <QProcess>
+#include <QDataStream>
+#include <unordered_map>
+
+MySerialPort::MySerialPort(QObject* parent)
+{
+    QByteArray m_buffer;
+    QByteArray m_letter;
+    serial = new QSerialPort(this);
+    connect(serial, SIGNAL(readyRead()), this, SLOT(readData()));
+    openSerialPort();
+    this->par = parent;
+    QString playState="PAUSE";
+    QString songArtist="";
+    QString songTitle="";
+    std::unordered_map<std::string,std::string> phoneBook;
+
+    QString tempName;
+//    bool toggleMusic=true;
+}
+
+
+
+void MySerialPort::openSerialPort()
+{
+
+    serial->setPortName("ttyS0");
+    serial->setBaudRate(QSerialPort::Baud9600);
+    serial->setDataBits(QSerialPort::Data8);
+    serial->setParity(QSerialPort::NoParity);
+    serial->setStopBits(QSerialPort::OneStop);
+    serial->setFlowControl(QSerialPort::NoFlowControl);
+    
+    if (serial->open(QIODevice::ReadWrite)) {
+
+        showStatusMessage("Open Success");
+//        qDebug() << "Connectedd" ;
+        serial->setReadBufferSize(32);
+//        writeData(QString("BATTERY_STATUS\r").toLatin1());
+//        writeData(QString("open 80EACA000005 ble 0\r").toLatin1());
+        writeData(QString("SET MUSIC_META_DATA=ON\r").toLatin1());
+        //writeData(QString("OPEN F47DEF4BBA21 PBAP\r").toLatin1());
+
+//        writeData(QString("$$$$").toLatin1());
+//        writeData(QString("COMMAND PULL PBOOK\r").toLatin1());
+//        writeData(QString("PULL PBOOK\r").toLatin1());
+    } else {
+//        qDebug() << "Open error" ;
+
+        showStatusMessage(tr("Open error"));
+    }
+}
+
+void MySerialPort::closeSerialPort()
+{
+    resetValues();
+    if (serial->isOpen())
+        serial->close();
+
+
+    showStatusMessage(tr("Disconnected"));
+}
+
+void MySerialPort::writeData(const QByteArray &data)
+{
+    qDebug() << "writing " << data;
+
+    serial->write(data);
+    serial->waitForBytesWritten(-1);
+}
+
+void MySerialPort::readData()
+{
+
+
+          while(serial->bytesAvailable()){
+
+            m_letter=serial->read(1);
+//            qDebug() << "letter" << m_letter;
+            m_buffer+=m_letter;
+            if(m_letter=="\r" || m_letter=="\n" || m_letter =="\\"){
+
+                handleCommand(QString::fromStdString(m_buffer.toStdString()).trimmed());
+                m_buffer.clear();
+                break;
+            }
+          }
+//          qDebug()<< m_buffer;
+
+
+
+
+}
+
+void MySerialPort::resetValues(){
+    QString empty = "";
+    QMetaObject::invokeMethod(this->par, "setInfoBarInstruction",Q_ARG(QVariant, empty));
+    QMetaObject::invokeMethod(this->par, "setInfoBarDistance",Q_ARG(QVariant, empty));
+    QMetaObject::invokeMethod(this->par, "setSpeed",Q_ARG(QVariant, "0"));
+}
+
+
+
+void MySerialPort::handleError(QSerialPort::SerialPortError error)
+{
+    if (error == QSerialPort::ResourceError) {
+        closeSerialPort();
+    }
+}
+
+
+void MySerialPort::showStatusMessage(const QString &message)
+{
+    qDebug() << message;
+}
+
+void MySerialPort::handleMusic(const QString &artist,const QString &song,const bool &active){
+    if(artist.length()==0 || song.length()==0) return;
+    QMetaObject::invokeMethod(this->par, "showMusic",Q_ARG(QVariant, songArtist),Q_ARG(QVariant, songTitle),Q_ARG(QVariant, active));
+}
+
+void MySerialPort::handleCommand(const QString msg){
+    qDebug() << msg;
+    QStringList msgSplit = msg.split(" ");
+//    if(msg=="OPEN_OK 15"){
+//        QMetaObject::invokeMethod(this->par, "connected");
+
+
+//    }
+
+    if(msgSplit[0]=="OPEN_OK"){
+
+        if (msgSplit[1]=="15"){
+            QString deviceAddress = msgSplit[3];
+    //        writeData(QString("$$$$").toLatin1());
+            //writeData(QString("PULL_PBOOK\r").toLatin1());
+            QMetaObject::invokeMethod(this->par, "connected");
+            writeData(QString("OPEN %1 PBAP\r").arg(deviceAddress).toLatin1());
+            writeData(QString("BATTERY_STATUS\r").toLatin1());
+    //        writeData(QString("PB_PULL 16\r").toLatin1());
+            writeData(QString("SCAN 10\r").toLatin1());
+        }
+        else if (msgSplit[1]=="24"){
+            QString deviceAddress = msgSplit[3];
+            //writeData(QString("BLE_WRITE 24 0024 52\r").toLatin1());
+            writeData(QString("SET REMOTE_ADDR=%1\r").arg(deviceAddress).toLatin1());
+        }
+
+    }
+
+    else if(msgSplit[0]=="AVRCP_MEDIA"){
+        if(msgSplit[2] =="TITLE:"){
+             songTitle = msg.mid(22);
+             qDebug()<< "songtit" << songTitle;
+        }
+        else if(msgSplit[2] =="ARTIST:"){
+            songArtist = msg.mid(23);
+            if(songTitle.size()>0)handleMusic(songArtist,songTitle,true);
+            qDebug()<< "songArt" << songArtist;
+        }
+
+
+    }
+
+    else if (msgSplit[0]=="SCAN"){
+        if(msgSplit[3].contains("Argon-Controller")){
+                writeData(QString("open %1 ble 0\r").arg(msgSplit[1]).toLatin1());
+
+        }
+    }
+
+
+    else if(msgSplit[0]=="AVRCP_PLAY"){
+        handleMusic(songArtist,songTitle,true);
+        playState="PLAY";
+    }else if(msgSplit[0]=="AVRCP_PAUSE"){
+        handleMusic(songArtist,songTitle,false);
+        playState = "PAUSE";
+    }
+//    else if(msg=="RECV SPP GPIO"){
+//        qDebug()<< "GPIOOO";
+//        QString val = QString::number(buffSize);
+//        buffSize = buffSize ? 0 :1;
+//        QMetaObject::invokeMethod(this->par, "toggleGPIO",Q_ARG(QVariant, val ));
+//        QProcess sh;
+//        sh.start("sh",QStringList()<<"-c"<<"echo "+val+" >/sys/class/gpio/gpio2/value");
+//        sh.waitForFinished();
+//        sh.close();
+//    }
+    else if (msgSplit[0]=="PBAP_PB"){
+            if(msgSplit[1] == "TEL:" && tempName.length()!=0){
+                qDebug() <<"Saving "<<msg.mid(13)<<" for "<<tempName;
+                phoneBook[msg.mid(13).toStdString()] = tempName.toStdString();
+            }else if(msg.split(" ")[1] == "NAME:"){
+                tempName = msg.mid(14);
+            }
+
+    }else if(msgSplit[0]=="CALL"){
+        QString pulledContact = QString::fromStdString(phoneBook[msgSplit[1].toStdString()]);
+        qDebug()<< msgSplit[0] << pulledContact <<" calling...";
+        QMetaObject::invokeMethod(this->par, "showCall",Q_ARG(QVariant, msgSplit[1]),Q_ARG(QVariant, pulledContact),Q_ARG(QVariant, true));
+    }
+
+    //BLE Commands
+
+    else if (msgSplit[0]=="BLE_NOTIFICATION"){
+//        if msgSplit[4]
+    }
+
+
+    else if (msgSplit[0]=="RECV"){
+            if(msgSplit[3]=="REAR"){
+                QMetaObject::invokeMethod(this->par, "showRear");
+
+            }else if(msgSplit[3]=="MAPS"){
+                QMetaObject::invokeMethod(this->par, "showMap");
+            }
+            else if(msgSplit[3]=="MUSIC"){
+                writeData(QString("SEND 15 HELLOCB\r").toLatin1());
+                if(songArtist.size()>0) handleMusic(songArtist,songTitle,true);
+
+        //            if(playState=="PAUSE"){writeData(QString("MUSIC PLAY\r").toLatin1());playState="PLAY";}
+        //            else if(playState=="PLAY"){writeData(QString("MUSIC PAUSE\r").toLatin1());playState="PAUSE";}
+
+
+            }
+            else if(msgSplit[3]=="INSTRUCTION"){
+                QString instr = msg.mid(23);
+                    //qDebug()<< "recevieved instruction: " << instr;
+                QMetaObject::invokeMethod(this->par, "setInfoBarInstruction",Q_ARG(QVariant, instr));
+
+                }
+
+
+            else if(msgSplit[3]=="DISTANCE"){
+                QString dist = msgSplit[4];
+                if(msgSplit[5][0]=="k"){
+                    dist = dist+" km";
+                }else{
+                    dist = dist+" m";
+                }
+                //qDebug()<< "recevieved dist: " << dist;
+                QMetaObject::invokeMethod(this->par, "setInfoBarDistance",Q_ARG(QVariant, dist));
+            }
+
+            else if(msgSplit[3]=="SPEED"){
+                QString speed = msgSplit[4];
+//                speed = (int)speed.toDouble()+"";
+//                qDebug()<< "recevieved speed: " << speed;
+                QMetaObject::invokeMethod(this->par, "setSpeed",Q_ARG(QVariant, speed));
+            }
+
+            else if(msgSplit[3]=="ARROW"){
+                QString arrow = msg.mid(17);
+//                speed = (int)speed.toDouble()+"";
+//                qDebug()<< "recevieved arrow: " << arrow;
+                QMetaObject::invokeMethod(this->par, "setArrow",Q_ARG(QVariant, arrow));
+            }
+
+            else if(msgSplit[3]=="STOPRIDE"){
+                resetValues();
+            }
+//            else if(msgSplit[2]=="GET_WIFILIST"){
+//                QProcess retrieveWifi;
+////                QString command = "iw dev wlan0 scan |grep SSID";
+//                QString command = "sh getSSid.sh";
+//                retrieveWifi.start(command);
+//                retrieveWifi.waitForFinished();
+//                QString output = retrieveWifi.readAllStandardOutput();
+//                writeData(output.toLatin1());
+//                qDebug()<< "wifi list " << output;
+//            }
+            else if (msgSplit[3]=="SCAN_WIFI"){
+                QProcess scanWifiAndSend;
+                QString command = QString("sh scanWifi.sh");
+//                qDebug() << command ;
+                scanWifiAndSend.start(command);
+                scanWifiAndSend.waitForFinished();
+                QString output = scanWifiAndSend.readAllStandardOutput();
+                QSet<QString> set;
+                QString res = "";
+                QStringList ssids = output.split(':');
+                for(auto i:ssids){
+                    if(i.contains("\n\tSSID")){
+                       set.insert(i.split("\n")[0]);
+                    }
+                }
+
+                for(auto i:set){
+                  res+=i+" ";
+
+                }
+                qDebug() <<res;
+                writeData(QString("SEND 15 %1\r").arg(res).toLatin1());
+
+
+            }
+
+            else if (msgSplit[3]=="CONNECT_WIFI"){
+                QProcess connectWifiAndRestart;
+                QString command = QString("sh connectWifi.sh '\%1\' '\%2\' ").arg(msgSplit[4],msgSplit[5]);
+//                qDebug() << command ;
+                connectWifiAndRestart.start(command);
+                connectWifiAndRestart.waitForFinished();
+            }
+
+            else if (msgSplit[3]=="CAMCONTROL"){
+                QProcess setv4l2;
+                QString command = QString("v4l2-ctl --set-ctrl %1").arg(msgSplit[4]);
+//                qDebug() << command ;
+                setv4l2.start(command);
+                setv4l2.waitForFinished();
+            }
+
+            else if (msgSplit[3]=="SET_BRIGHTNESS"){
+                QProcess setBrightness;
+                QString command = QString("sh pwm.sh %1").arg(msgSplit[4]);
+//                qDebug() << command ;
+                setBrightness.start(command);
+                setBrightness.waitForFinished();
+            }
+
+            else if (msgSplit[3]=="SERIAL_WRITE"){
+                QString toWrite = msg.mid(25;
+                writeData(toWrite.toLatin1());
+
+
+            }
+
+
+
+    }
+}
+
